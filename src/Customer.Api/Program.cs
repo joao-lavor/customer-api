@@ -5,13 +5,14 @@ var configuration = builder.Configuration;
 var services = builder.Services;
 
 services.AddServices()
-        .AddRepositories(configuration);
+        .AddRepositories(configuration)
+        .AddSwagger();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
 
 var app = builder.Build();
+app.SwaggerConfiguration();
 
 if (app.Environment.IsDevelopment())
 {
