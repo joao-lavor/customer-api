@@ -16,9 +16,9 @@ namespace Customer.Api.Controllers
             return Ok(new CustomerResponse
             {
                 Id = Guid.NewGuid(),
-                Cpf = "39924134896",
+                CPF = "39924134896",
                 Name = "João",
-                Sobrenome = "Lavor",
+                SobreNome = "Lavor",
                 BirthDate = DateTime.Now
             });
         }
