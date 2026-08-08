@@ -1,5 +1,6 @@
 ﻿using Customer.Domain.Entities;
 using Customer.Domain.Interfaces.Services;
+using Customer.Domain.Shared;
 
 namespace Customer.Domain.Services
 {
@@ -17,51 +18,59 @@ namespace Customer.Domain.Services
             return result;
         }
 
-        public async Task<string> RegisterCustomer(CustomerEntity customer)
+        public async Task<DefaultResult> RegisterCustomer(CustomerEntity customer)
         {
+            DefaultResult result = new DefaultResult();
+            
             bool CustomerAlreadyExists = false;
 
             CustomerAlreadyExists = true;
 
             if(CustomerAlreadyExists)
-                return "Cliente já cadastrado!";
+                return new DefaultResult(false,"Cliente ja cadastrado!", "");
 
             if (string.IsNullOrEmpty(customer.Name))
-                return "É necessário informar o nome do cliente!";
+
+                return new DefaultResult(false, "Cliente ja cadastrado!", "");
+
 
             if (string.IsNullOrEmpty(customer.CPF))
-                return "É necessário informar um CPF válido!";
 
-            return "Cliente cadastrado com sucesso!";
+                return new DefaultResult(false, "Cliente ja cadastrado!", "");
+
+
+
+            return new DefaultResult(true, "Cliente ja cadastrado!", customer.Id.ToString());
+
         }
 
-        public async Task<string> UpdateCustomer(CustomerEntity customer)
+        public async Task<DefaultResult> UpdateCustomer(CustomerEntity customer)
         {
             bool CustomerAlreadyExists = false;
 
             CustomerAlreadyExists = true;
 
             if (CustomerAlreadyExists)
-                return "Cliente Inválido ou Inexistente!";
+                return new DefaultResult(false, "Cliente Inválido ou Inexistente!","");
 
             if (string.IsNullOrEmpty(customer.Name))
-                return "É necessário informar o nome do cliente!";
+                return new DefaultResult(false,"É necessário informar o nome do cliente!","");
 
             if (string.IsNullOrEmpty(customer.CPF))
-                return "É necessário informar um CPF válido!";
+                return new DefaultResult(false,"É necessário informar um CPF válido!","");
 
-            return "Cliente atualizado com sucesso!";
+            return new DefaultResult(true,"Cliente atualizado com sucesso!", customer.Id.ToString());
         }
 
-        public async Task<string> DeleteCustomer(Guid Id)
+        public async Task<DefaultResult> DeleteCustomer(Guid Id)
         {
             bool CustomerExists = false;
 
             CustomerExists = false;
 
             if (!CustomerExists)
-                return "Cliente Inexistente ou Inválido!";
-            return "Cliente excluido com sucesso!";
+                return new DefaultResult(false, "Cliente Inválido ou Inexistente!", "");
+            return new DefaultResult(true,"Cliente excluido com sucesso!",Id.ToString());
         }
 
     }
