@@ -14,7 +14,7 @@ namespace Customer.Domain.Services
 
         public async Task<CustomerEntity> GetCustomerById(Guid Id)
         {
-            var result = new CustomerEntity { Id = Guid.NewGuid(), Name = "João", CPF = "12345678955", BirthDate = DateTime.Now, SobreNome = "Lavor" };
+            var result = new CustomerEntity { Id = Guid.NewGuid(), Name = "João", CPF = "12345678955", BirthDate = DateTime.Now, LastName = "Lavor" };
             return result;
         }
 

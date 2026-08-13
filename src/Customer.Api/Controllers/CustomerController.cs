@@ -1,4 +1,5 @@
-﻿using Customer.Api.DTOs;
+﻿using Customer.Application.DTOs;
+using Customer.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Customer.Api.Controllers
@@ -7,37 +8,40 @@ namespace Customer.Api.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
+        private readonly IAppCustomerService _appService;
+        public CustomerController(IAppCustomerService appService)
+        {
+            _appService = appService;
+        }
+
         [HttpGet("Customer/{id}")]
-        [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCustomerById([FromRoute] Guid id)
         {
-            return Ok(new CustomerResponse
-            {
-                Id = Guid.NewGuid(),
-                CPF = "39924134896",
-                Name = "João",
-                SobreNome = "Lavor",
-                BirthDate = DateTime.Now
-            });
+            var result = await _appService.GetCustomerByIdAsync(id);
+            return Ok(result);
+            
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RegisterCustomer([FromBody] RegisterCustomerRequest request)
+        public async Task<IActionResult> RegisterCustomer([FromBody] RegisterCustomerDTO request)
         {
-            return Ok("OK");
+            var result = _appService.RegisterCustomerAsync(request);
+            return Ok(result);
         }
         [HttpPut]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerRequest request)
+        public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerDTO request)
         {
-            return Ok("OK");
+            var result = _appService.UpdateCustomerAsync(request);      
+            return Ok(result);
         }
         [HttpDelete("Customer/{id}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -45,7 +49,8 @@ namespace Customer.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCustomerById([FromRoute] Guid id)
         {
-            return Ok("OK");
+            var result = _appService.DeleteCustomerAsync(id);
+            return Ok(result);
         }
 
     }

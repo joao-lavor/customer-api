@@ -13,7 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\" />
     <Folder Include="Initializers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Customer.Application\Customer.Application.csproj" />
   </ItemGroup>
 
 </Project>

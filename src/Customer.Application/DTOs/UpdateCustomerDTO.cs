@@ -1,11 +1,13 @@
-﻿namespace Customer.Api.DTOs
+﻿namespace Customer.Application.DTOs
 {
-    public class CustomerResponse
+    public class UpdateCustomerDTO
     {
+
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string CPF { get; set; }
-        public string SobreNome { get; set; }
+        public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+
     }
 }
