@@ -1,6 +1,6 @@
 ﻿using Customer.InfraStructure.Interfaces;
 using Dapper;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace Customer.InfraStructure.Repositories.Base
@@ -12,8 +12,6 @@ namespace Customer.InfraStructure.Repositories.Base
         {
             _connectionString = connectionString;
         }
-
-
         public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null, CommandType? commandType = null, int? commandTimeOut = 6000000)
         {
             using var sqlConnection = new MySqlConnection(_connectionString);
@@ -24,7 +22,7 @@ namespace Customer.InfraStructure.Repositories.Base
             using var sqlConnection = new MySqlConnection(_connectionString);
             return await sqlConnection.QueryFirstOrDefaultAsync<T>(sql: sql, param: param, commandType: commandType, commandTimeout: commandTimeOut);
         }
-        public async Task<int> ExecuteAsync<T>(string sql, object param = null, CommandType? commandType = null, int? commandTimeOut = 6000000)
+        public async Task<int> ExecuteAsync(string sql, object param = null, CommandType? commandType = null, int? commandTimeOut = 6000000)
         {
             using var sqlConnection = new MySqlConnection(_connectionString);
             return await sqlConnection.ExecuteAsync(sql: sql, param: param, commandType: commandType, commandTimeout: commandTimeOut);

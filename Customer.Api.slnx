@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Items/">
+    <File Path="CreateTable.sql" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Customer.Api/Customer.Api.csproj" />
     <Project Path="src/Customer.Application/Customer.Application.csproj" />

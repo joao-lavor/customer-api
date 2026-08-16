@@ -8,6 +8,7 @@ namespace Customer.Application.Interfaces
         Task<string> UpdateCustomerAsync(UpdateCustomerDTO dto);
         Task<string> DeleteCustomerAsync(Guid id);
         Task<CustomerResponseDTO> GetCustomerByIdAsync(Guid id);
+        Task<IEnumerable<CustomerResponseDTO>> GetCustomersAsync();
 
 
     }

@@ -25,13 +25,24 @@ namespace Customer.Api.Controllers
             
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(CustomerResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCustomers()
+        {
+            var result = await _appService.GetCustomersAsync();
+            return Ok(result);
+
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterCustomer([FromBody] RegisterCustomerDTO request)
         {
-            var result = _appService.RegisterCustomerAsync(request);
+            var result =  await _appService.RegisterCustomerAsync(request);
             return Ok(result);
         }
         [HttpPut]
@@ -40,7 +51,7 @@ namespace Customer.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerDTO request)
         {
-            var result = _appService.UpdateCustomerAsync(request);      
+            var result = await _appService.UpdateCustomerAsync(request);      
             return Ok(result);
         }
         [HttpDelete("Customer/{id}")]
@@ -49,7 +60,7 @@ namespace Customer.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCustomerById([FromRoute] Guid id)
         {
-            var result = _appService.DeleteCustomerAsync(id);
+            var result = await _appService.DeleteCustomerAsync(id);
             return Ok(result);
         }
 

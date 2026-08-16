@@ -1,4 +1,6 @@
-﻿namespace Customer.Domain.Entities
+﻿using System.ComponentModel.Design;
+
+namespace Customer.Domain.Entities
 {
     public class CustomerEntity
     {
@@ -7,7 +9,9 @@
         public string LastName { get; set; }
         public string CPF { get; set; }
         public DateTime BirthDate { get; set; }
-
+        public bool Active { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
         public CustomerEntity NewCustomer(string name, string lastName, string cpf, DateTime birthDate)
         {
@@ -16,16 +20,18 @@
             LastName = lastName;
             CPF = cpf;
             BirthDate = birthDate;
+            Active = true;
             return this;
         }
 
-        public CustomerEntity UpdateCustomer(Guid id,string name, string lastName, string cpf, DateTime birthDate)
+        public CustomerEntity UpdateCustomer(Guid id,string name, string lastName, string cpf, DateTime birthDate, bool active)
         {
             Id = id;
             Name = name;
             LastName = lastName;
             CPF = cpf;
             BirthDate = birthDate;
+            Active = active;
             return this;
         }
     }
