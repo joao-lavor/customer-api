@@ -1,4 +1,5 @@
-﻿using Customer.Application.DTOs;
+﻿using Customer.Api.Controllers.Base;
+using Customer.Application.DTOs;
 using Customer.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace Customer.Api.Controllers
 {
     [Route("v1/[Controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : BaseController
     {
         private readonly IAppCustomerService _appService;
         public CustomerController(IAppCustomerService appService)
@@ -15,53 +16,57 @@ namespace Customer.Api.Controllers
         }
 
         [HttpGet("Customer/{id}")]
-        [ProducesResponseType(typeof(CustomerResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCustomerById([FromRoute] Guid id)
         {
             var result = await _appService.GetCustomerByIdAsync(id);
-            return Ok(result);
-            
+            return await HandleReturn(result);
+
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(CustomerResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCustomers()
         {
             var result = await _appService.GetCustomersAsync();
-            return Ok(result);
+            return await HandleReturn(result);
 
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterCustomer([FromBody] RegisterCustomerDTO request)
         {
-            var result =  await _appService.RegisterCustomerAsync(request);
-            return Ok(result);
+            var result = await _appService.RegisterCustomerAsync(request);
+            return await HandleReturn(result);
         }
+
+
         [HttpPut]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerDTO request)
         {
-            var result = await _appService.UpdateCustomerAsync(request);      
-            return Ok(result);
+            var result = await _appService.UpdateCustomerAsync(request);
+            return await HandleReturn(result);
         }
         [HttpDelete("Customer/{id}")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCustomerById([FromRoute] Guid id)
         {
             var result = await _appService.DeleteCustomerAsync(id);
-            return Ok(result);
+            return await HandleReturn(result);
         }
 
     }

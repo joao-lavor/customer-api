@@ -12,30 +12,58 @@ namespace Customer.Application.Services
         {
             _customerDomainService = customerDomainService;
         }
-        public async Task<string> RegisterCustomerAsync(RegisterCustomerDTO dto)
+        public async Task<BaseResponse> RegisterCustomerAsync(RegisterCustomerDTO dto)
         {
+            var response = new BaseResponse();
             var entity = new CustomerEntity();
             var data = entity.NewCustomer(dto.Name, dto.LastName, dto.CPF, dto.BirthDate);
             var result = await _customerDomainService.RegisterCustomer(data);
-            return result.Mensagem;
+
+            if (result.Sucess)
+            {
+                response = new BaseResponse { Data = result, Success = result.Sucess };
+                response.Notifications = null;
+            }
+            else
+                response.AddNotification(result.Mensagem);
+            return response;
         }
 
-        public async Task<string> UpdateCustomerAsync(UpdateCustomerDTO dto)
+        public async Task<BaseResponse> UpdateCustomerAsync(UpdateCustomerDTO dto)
         {
+            var response = new BaseResponse();
             var entity = new CustomerEntity();
             var data = entity.UpdateCustomer(dto.Id, dto.Name, dto.LastName, dto.CPF, dto.BirthDate, dto.Active);
             var result = await _customerDomainService.UpdateCustomer(data);
-            return result.Mensagem;
+
+            if (result.Sucess)
+            {
+                response = new BaseResponse { Data = result, Success = result.Sucess };
+                response.Notifications = null;
+            }
+            else
+                response.AddNotification(result.Mensagem);
+            return response;
         }
 
-        public async Task<string> DeleteCustomerAsync(Guid id)
+        public async Task<BaseResponse> DeleteCustomerAsync(Guid id)
         {
+            var response = new BaseResponse();
             var result = await _customerDomainService.DeleteCustomer(id);
-            return result.Mensagem;
+
+            if (result.Sucess)
+            {
+                response = new BaseResponse { Data = result, Success = result.Sucess };
+                response.Notifications = null;
+            }
+            else
+                response.AddNotification(result.Mensagem);
+            return response;
         }
 
-        public async Task<CustomerResponseDTO> GetCustomerByIdAsync(Guid id)
+        public async Task<BaseResponse> GetCustomerByIdAsync(Guid id)
         {
+            var response = new BaseResponse();
             var data = new CustomerResponseDTO();
             var result = await _customerDomainService.GetCustomerById(id);
             
@@ -51,11 +79,23 @@ namespace Customer.Application.Services
                     Active = result.Active
                 };
             }
-            return data;
+
+            if (result != null)
+            {
+                response = new BaseResponse { Data = data, Success = true };
+                response.Notifications = null;
+            }
+            else 
+            {
+                response.Notifications = null;
+            }
+
+            return response;
         }
 
-        public async Task<IEnumerable<CustomerResponseDTO>> GetCustomersAsync()
+        public async Task<BaseResponse> GetCustomersAsync()
         {
+            var response = new BaseResponse();
             var data = new List<CustomerResponseDTO>();
 
             var result = await _customerDomainService.GetCustomersAsync();
@@ -73,7 +113,18 @@ namespace Customer.Application.Services
                 };
                 data.Add(customer);
             }
-            return data;
+
+            if (result != null)
+            {
+                response = new BaseResponse { Data = data, Success = true };
+                response.Notifications = null;
+            }
+            else
+            {
+                response.Notifications = null;
+            }
+
+            return response;
         }
 
 

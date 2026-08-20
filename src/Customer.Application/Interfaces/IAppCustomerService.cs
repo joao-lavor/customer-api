@@ -4,11 +4,11 @@ namespace Customer.Application.Interfaces
 {
     public interface IAppCustomerService
     {
-        Task<string> RegisterCustomerAsync(RegisterCustomerDTO dto);
-        Task<string> UpdateCustomerAsync(UpdateCustomerDTO dto);
-        Task<string> DeleteCustomerAsync(Guid id);
-        Task<CustomerResponseDTO> GetCustomerByIdAsync(Guid id);
-        Task<IEnumerable<CustomerResponseDTO>> GetCustomersAsync();
+        Task<BaseResponse> RegisterCustomerAsync(RegisterCustomerDTO dto);
+        Task<BaseResponse> UpdateCustomerAsync(UpdateCustomerDTO dto);
+        Task<BaseResponse> DeleteCustomerAsync(Guid id);
+        Task<BaseResponse> GetCustomerByIdAsync(Guid id);
+        Task<BaseResponse> GetCustomersAsync();
 
 
     }
