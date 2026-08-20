@@ -63,6 +63,22 @@ namespace Customer.InfraStructure.Repositories
             return result;
         }
 
+        public async Task<bool> ExistsByCpfAsync(string cpf)
+        {
+            var sqlQuery = "SELECT 1 FROM customers WHERE cpf = @cpf";
+            var param = new { cpf };
+            var result = await _connection.QueryFirstOrDefaultAsync<int>(sqlQuery, param);
+            return result  >0 ;
+        }
+
+        public async Task<CustomerEntity> GetCustomerByCpf(string cpf)
+        {
+            var sqlQuery = "SELECT id, name, lastName,cpf, birthDate, active FROM customers WHERE cpf = @cpf";
+            var param = new { cpf };
+            var result = await _connection.QueryFirstOrDefaultAsync<CustomerEntity>(sqlQuery, param);
+            return result;
+        }
+
         public async Task<IEnumerable<CustomerEntity>> GetCustomers()
         {
             var sqlQuery = "SELECT id, name, lastName,cpf, birthDate, active FROM customers";

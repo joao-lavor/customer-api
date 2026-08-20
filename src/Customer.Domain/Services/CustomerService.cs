@@ -1,8 +1,11 @@
 ﻿using Customer.Domain.Entities;
+using Customer.Domain.EnumExtensions;
+using Customer.Domain.Enums;
 using Customer.Domain.Interfaces.Repositories;
 using Customer.Domain.Interfaces.Services;
 using Customer.Domain.Shared;
-using System.Net.WebSockets;
+using Customer.Domain.Validators;
+using System.Net.Http.Headers;
 
 namespace Customer.Domain.Services
 {
@@ -21,65 +24,67 @@ namespace Customer.Domain.Services
 
         public async Task<DefaultResult> RegisterCustomer(CustomerEntity customer)
         {
-            bool CustomerAlreadyExists = false;
+            var existCustomer = await _repository.ExistsByCpfAsync(customer.CPF);
 
-            if (CustomerAlreadyExists)
-                return new DefaultResult(false, "Cliente ja cadastrado!", "");
+            if (existCustomer)
+                return new DefaultResult(false, CustomerEnum.CustomerRegistration_DuplicateCustomer.GetDescription(), "");
 
-            if (string.IsNullOrEmpty(customer.Name))
+            var validation = new RegisterCustomerValidation();
+            var resultValidation = validation.Validate(customer);
 
-                return new DefaultResult(false, "É necessário informar o nome do cliente", "");
-
-
-            if (string.IsNullOrEmpty(customer.CPF))
-
-                return new DefaultResult(false, "É necessário informar um CPF válido", "");
+            if (!resultValidation.IsValid)
+                return new DefaultResult(false, resultValidation.Errors.First().ErrorMessage, "");
 
             var result = await _repository.RegisterCustomer(customer);
 
             if (result)
-                return new DefaultResult(true, "Cliente cadastrado com sucesso!", customer.Id.ToString());
+                return new DefaultResult(true, CustomerEnum.CustomerRegistration_Successful.GetDescription(), customer.Id.ToString());
 
-            return new DefaultResult(false, "Erro ao cadastrar o cliente!", "");
+            return new DefaultResult(false, CustomerEnum.CustomerRegistration_Failed.GetDescription(), "");
         }
 
         public async Task<DefaultResult> UpdateCustomer(CustomerEntity customer)
         {
-            bool CustomerAlreadyExists = false;
+            var existCustomer = await _repository.GetCustomerById(customer.Id);
 
-            if (CustomerAlreadyExists)
-                return new DefaultResult(false, "Cliente Inválido ou Inexistente!", "");
+            if (existCustomer == null)
+                return new DefaultResult(false, CustomerEnum.Customer_NotFound.GetDescription(), "");
 
-            if (string.IsNullOrEmpty(customer.Name))
-                return new DefaultResult(false, "É necessário informar o nome do cliente!", "");
+            var customerByCpf = await _repository.GetCustomerByCpf(customer.CPF);
 
-            if (string.IsNullOrEmpty(customer.CPF))
-                return new DefaultResult(false, "É necessário informar um CPF válido!", "");
+            if(customerByCpf != null && customerByCpf.Id != customer.Id)
+                return new DefaultResult(false, CustomerEnum.CustomerUpdate_CPF_AlreadyRegistered.GetDescription(), "");
+
+            var validation = new UpdateCustomerValidation();
+            var resultValidation = validation.Validate(customer);
+
+            if (!resultValidation.IsValid)
+                return new DefaultResult(false, resultValidation.Errors.First().ErrorMessage, "");
 
             var result = await _repository.UpdateCustomer(customer);
 
             if (result)
-                return new DefaultResult(true, "Cliente atualizado com sucesso!", customer.Id.ToString());
+                return new DefaultResult(true, CustomerEnum.CustomerUpdate_Successful.GetDescription(), customer.Id.ToString());
 
-            return new DefaultResult(false, "Erro ao atualizar Cliente!","");
+            return new DefaultResult(false, CustomerEnum.CustomerUpdate_Failed.GetDescription(), "");
         }
 
         public async Task<DefaultResult> DeleteCustomer(Guid Id)
         {
-            bool CustomerExists = true;
+            var customerAlreadyRegistered = await _repository.GetCustomerById(Id);
 
-            if (!CustomerExists)
-                return new DefaultResult(false, "Cliente Inválido ou Inexistente!", "");
-                
+            if (customerAlreadyRegistered == null)
+                return new DefaultResult(false, CustomerEnum.Customer_NotFound.GetDescription(), "");
+
             var result = await _repository.DeleteCustomerById(Id);
 
             if (!result)
-                return new DefaultResult(false, "Falha ao excluir cliente!", Id.ToString());
+                return new DefaultResult(false, CustomerEnum.CustomerDelete_Failed.GetDescription(), Id.ToString());
 
-            return new DefaultResult(true, "Cliente excluido com sucesso!", Id.ToString());
+            return new DefaultResult(true, CustomerEnum.CustomerDelete_Sucessful.GetDescription(), Id.ToString());
         }
 
-        public async Task<IEnumerable<CustomerEntity>> GetCustomersAsync() 
+        public async Task<IEnumerable<CustomerEntity>> GetCustomersAsync()
         {
             return await _repository.GetCustomers();
         }
